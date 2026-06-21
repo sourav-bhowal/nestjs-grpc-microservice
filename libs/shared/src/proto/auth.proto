@@ -1,15 +1,22 @@
+// Version of the Protocol Buffers language used in this file. 
+// Proto3 is the latest version and provides a simpler syntax and better support for modern programming languages.
 syntax = "proto3";
 
+// Name of the package for the authentication service. This package name is used to group related messages and services together.
 package auth;
 
+// The AuthService defines the gRPC service for authentication-related operations. 
+// It includes a single RPC method, ValidateToken, which takes a ValidateTokenRequest and returns a ValidateTokenResponse.
 service AuthService {
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
 }
 
+// The ValidateTokenRequest message is used to request the validation of a token.
 message ValidateTokenRequest {
   string token = 1;
 }
 
+// The ValidateTokenResponse message is used to respond to a token validation request.
 message ValidateTokenResponse {
   bool valid = 1;
   string user_id = 2;
