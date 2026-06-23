@@ -14,7 +14,7 @@ import type {
 
 // Injectable means that this class can be injected as a dependency in other parts of the application.
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
+export class JwtGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
