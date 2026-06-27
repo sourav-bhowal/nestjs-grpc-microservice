@@ -10,7 +10,7 @@ import {
 import { Public } from 'src/decorators/public.decorator';
 import { JwtGuard } from 'src/guards/jwt.guard';
 
-@Controller()
+@Controller('auth') // Base URL for the auth controller
 @UseGuards(JwtGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
