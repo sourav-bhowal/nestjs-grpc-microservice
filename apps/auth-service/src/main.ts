@@ -7,6 +7,8 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
 
+  app.enableCors(); // Enable CORS for all origins
+
   // Connect the auth service to the microservice using GRPC
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
