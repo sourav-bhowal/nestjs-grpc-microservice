@@ -1,7 +1,9 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -40,17 +42,16 @@ export class GrpcAuthGuard implements CanActivate {
 
     try {
       const response = await this.authClient.validateToken(token);
-      if (!response.valid) {
-        throw new UnauthorizedException(
-          'Invalid or expired token' +
-            (response.error ? `: ${response.error}` : ''),
-        );
-      }
-
       request.user = response;
       return true;
-    } catch {
-      throw new UnauthorizedException('Error occurred while verifying token');
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Error occurred while verifying token',
+      );
     }
   }
 }

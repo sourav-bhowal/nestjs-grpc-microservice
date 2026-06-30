@@ -1,12 +1,17 @@
 import {
   Injectable,
+  InternalServerErrorException,
   OnModuleInit,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Client, type ClientGrpc, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { Observable, firstValueFrom } from 'rxjs';
-import { CircuitBreaker } from '../common/circuit-breaker';
+import {
+  CircuitBreaker,
+  CircuitBreakerOpenError,
+} from '../common/circuit-breaker';
 
 // The `AuthGrpcService` interface defines the structure of the gRPC service for authentication.
 // It includes a method `validateToken` that takes an object with a `token` property and returns an observable
@@ -61,14 +66,30 @@ export class AuthClient implements OnModuleInit {
   // Validates the provided token by calling the AuthService's validateToken method through gRPC.
   // Uses a circuit breaker to manage failures and prevent cascading failures in case of repeated errors.
   async validateToken(token: string) {
-    const result = await this.circuitBreaker.excute(() =>
-      firstValueFrom(this.authService.validateToken({ token })),
-    );
+    try {
+      const result = await this.circuitBreaker.excute(() =>
+        firstValueFrom(this.authService.validateToken({ token })),
+      );
 
-    if (!result.valid) {
-      throw new UnauthorizedException(result.error || 'Invalid token');
+      if (!result.valid) {
+        throw new UnauthorizedException(result.error || 'Invalid token');
+      }
+
+      return result;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
+      if (error instanceof CircuitBreakerOpenError) {
+        throw new ServiceUnavailableException(
+          'Auth service temporarily unavailable. Please try again later.',
+        );
+      }
+
+      throw new InternalServerErrorException(
+        'Error occurred while verifying token',
+      );
     }
-
-    return result;
   }
 }

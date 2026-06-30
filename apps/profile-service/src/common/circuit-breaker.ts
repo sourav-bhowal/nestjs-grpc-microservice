@@ -1,5 +1,12 @@
 type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
 
+export class CircuitBreakerOpenError extends Error {
+  constructor(message = 'Circuit breaker is open. Please try again later.') {
+    super(message);
+    this.name = 'CircuitBreakerOpenError';
+  }
+}
+
 export class CircuitBreaker {
   private state: CircuitState = 'CLOSED'; // Initial state is CLOSED
   private failureCount: number = 0; // Count of consecutive failures
@@ -15,12 +22,12 @@ export class CircuitBreaker {
     if (this.state === 'OPEN') {
       const timeSinceLastFailure = Date.now() - this.lastFailureTime; // Calculate the time since the last failure
 
-      //
+      // If the time since the last failure is less than the recovery timeout, throw a CircuitBreakerOpenError
       if (timeSinceLastFailure < this.recoveryTimeout) {
-        throw new Error('Circuit breaker is open. Please try again later.');
+        throw new CircuitBreakerOpenError(); // Throw a CircuitBreakerOpenError
       }
 
-      this.state = 'HALF_OPEN';
+      this.state = 'HALF_OPEN'; // Set the state to HALF_OPEN
     }
 
     try {
