@@ -16,6 +16,7 @@ async function bootstrap() {
       package: 'auth', // Name of the auth GRPC package which we defined in proto file
       protoPath: join(process.cwd(), '../../libs/shared/src/proto/auth.proto'), // Path to the proto file
       url: `0.0.0.0:${process.env.GRPC_PORT ?? 50051}`, // URL of the auth service
+      loader: { keepCase: true }, // Keep the case of the fields in the proto file
     },
   });
 

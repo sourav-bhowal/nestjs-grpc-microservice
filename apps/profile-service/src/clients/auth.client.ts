@@ -32,6 +32,7 @@ export class AuthClient implements OnModuleInit {
       package: 'auth',
       protoPath: join(process.cwd(), '../../libs/shared/src/proto/auth.proto'),
       url: process.env.AUTH_SERVICE_GRPC_URL || 'localhost:50051',
+      loader: { keepCase: true }, // Keep the case of the fields in the proto file
     },
   })
 
