@@ -12,7 +12,7 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       package: 'auth', // Name of the auth GRPC package which we defined in proto file
-      protoPath: join(__dirname, '../../../libs/shared/src/proto/auth.proto'), // Path to the proto file
+      protoPath: join(process.cwd(), '../../libs/shared/src/proto/auth.proto'), // Path to the proto file
       url: `0.0.0.0:${process.env.GRPC_PORT ?? 50051}`, // URL of the auth service
     },
   });
@@ -26,6 +26,8 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api'); // Set the global prefix for the app
+
+  await app.startAllMicroservices();
 
   // Start the auth service
   await app.listen(process.env.PORT ?? 3001);
