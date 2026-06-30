@@ -29,6 +29,11 @@ export class JwtGuard implements CanActivate {
 
     if (isPublic) return true; // Allow access to public routes without authentication
 
+    // If the request is a gRPC request, allow access without authentication
+    if (context.getType() === 'rpc') {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const authHeader = request.headers['authorization'];
 
