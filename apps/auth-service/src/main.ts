@@ -30,7 +30,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api'); // Set the global prefix for the app
 
-  await app.startAllMicroservices(); // Start the microservices only needed here because we are using the auth service as a microservice
+  await app.startAllMicroservices(); // Start the microservices only needed here because we are using GRPC to communicate with the auth service
 
   // Start the auth service as a standalone server
   await app.listen(process.env.PORT ?? 3001);
