@@ -9,27 +9,27 @@ import { Public } from './decorators/public.decorator';
 @UseGuards(ThrottlerGuard) // Use the ThrottlerGuard to limit the number of requests per minute
 export class GatewayController {
   // Register and login are public routes so we don't need to check the JwtGuard
-  @All('api/auth/register')
+  @All('/api/auth/register')
   @Public()
   proxyRegister(@Req() req: Request, @Res() res: Response) {
     return this.proxy(req, res, process.env.AUTH_SERVICE_URL!);
   }
 
-  @All('api/auth/login')
+  @All('/api/auth/login')
   @Public()
   proxyLogin(@Req() req: Request, @Res() res: Response) {
     return this.proxy(req, res, process.env.AUTH_SERVICE_URL!);
   }
 
   // Proxy all other auth routes to the auth service they required a valid token
-  @All('api/auth/*')
+  @All('/api/auth/*path')
   @UseGuards(JwtGuard)
   proxyAuth(@Req() req: Request, @Res() res: Response) {
     return this.proxy(req, res, process.env.AUTH_SERVICE_URL!);
   }
 
   // Proxy all profile routes to the profile service they required a valid token
-  @All('api/profile/*')
+  @All('/api/profile/*path')
   @UseGuards(JwtGuard)
   proxyProfile(@Req() req: Request, @Res() res: Response) {
     return this.proxy(req, res, process.env.PROFILE_SERVICE_URL!);

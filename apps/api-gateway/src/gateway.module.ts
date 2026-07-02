@@ -19,7 +19,7 @@ import { GatewayController } from './gateway.controller';
       throttlers: [
         {
           ttl: 60000, // 1 minute
-          limit: 20, // 20 requests per minute
+          limit: 5, // 5 requests per minute
         },
       ],
       storage: new ThrottlerStorageRedisService(
