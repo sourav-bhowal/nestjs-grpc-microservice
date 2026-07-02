@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { seconds, ThrottlerModule } from '@nestjs/throttler';
 import Redis from 'ioredis';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { JwtGuard } from './guards/jwt.guard';
@@ -18,7 +18,7 @@ import { GatewayController } from './gateway.controller';
       // Register the ThrottlerModule to use the ThrottlerInterceptor it is used to limit the number of requests per minute
       throttlers: [
         {
-          ttl: 60000, // 1 minute
+          ttl: seconds(60), // 1 minute
           limit: 5, // 5 requests per minute
         },
       ],
